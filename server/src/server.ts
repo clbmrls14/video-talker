@@ -1,0 +1,48 @@
+import express from "express";
+import { PerformanceObserver } from "perf_hooks";
+import socket from "socket.io";
+
+import { IUser } from './interfaces/User';
+
+const PORT = 5000;
+
+const app = express();
+
+const server = app.listen(PORT, () => {
+  console.log(`server is listening on port ${PORT}`);
+  console.log(`http://localhost:${PORT}`);
+});
+
+const io = require("socket.io")(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
+});
+
+let peers: IUser[]= [];
+
+const broadcastEventTypes = {
+  ACTIVE_USERS: 'ACTIVE_USERS',
+  GROUP_CALL_ROOMS: 'GROUP_CALL_ROOMS'
+};
+
+io.on("connection", (socket: any) => {
+  socket.emit("connection", null);
+  console.log("new user connected");
+  console.log(socket.id);
+
+  socket.on('register-new-user', (data: any) => {
+    peers.push({
+      username: data.username,
+      socketId: data.socketId
+    });
+    console.log('registered new user');
+    console.log(peers);
+  })
+
+  io.sockets.emit('broadcast', {
+    event: broadcastEventTypes.ACTIVE_USERS,
+    activeUsers: peers
+  })
+});
