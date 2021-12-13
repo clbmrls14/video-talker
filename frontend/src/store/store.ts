@@ -2,6 +2,8 @@ import { createStore } from "redux";
 import mainReducer from "./reducer";
 import { composeWithDevTools } from "redux-devtools-extension";
 
-const store = createStore(mainReducer, composeWithDevTools());
+export const store = createStore(mainReducer, composeWithDevTools());
 
-export default store;
+export type RootState = ReturnType<typeof store.getState>;
+
+export type AppDispatch = typeof store.dispatch;
