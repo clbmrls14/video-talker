@@ -1,5 +1,5 @@
 import socketClient from "socket.io-client";
-import store from "../../store/store";
+import { store } from "../../store/store";
 import * as dashboardActions from "../../store/actions/dashboardActions";
 
 const SERVER = "http://localhost:5000";

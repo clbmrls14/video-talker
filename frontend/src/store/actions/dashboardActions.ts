@@ -5,12 +5,16 @@ export const setUsername = (username: string) => {
   return {
     type: DASHBOARD_SET_USERNAME,
     username,
-  };
+  } as const;
 };
 
 export const setActiveUsers = (activeUsers: User[]) => {
   return {
     type: DASHBOARD_SET_ACTIVE_USERS,
     activeUsers,
-  };
+  } as const;
 };
+
+export type Actions =
+  | ReturnType<typeof setUsername>
+  | ReturnType<typeof setActiveUsers>;

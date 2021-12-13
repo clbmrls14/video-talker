@@ -5,7 +5,7 @@ type Props = {
   setUsername(username: string): void;
 };
 
-const UsernameInput = ({username, setUsername}: Props) => {
+const UsernameInput = ({ username, setUsername }: Props) => {
   return (
     <div className="login-page_input_container">
       <input

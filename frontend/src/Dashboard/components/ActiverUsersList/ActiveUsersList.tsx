@@ -4,12 +4,16 @@ import ActiveUsersListItem from "./ActiveUsersListItem";
 
 import "./ActiveUsersList.css";
 import { connect } from "react-redux";
+import { RootState } from "../../../store/store";
 
+interface Props {
+  state: AppState;
+}
 
-const ActiveUsersList = ({dashboard}: any) => {
+const ActiveUsersList = (props: Props) => {
   return (
     <div className="active_user_list_container">
-      {dashboard.activeUsers.map((activeUser: User) => (
+      {props.state.activeUsers.map((activeUser: User) => (
         <ActiveUsersListItem
           key={activeUser.socketId}
           activeUser={activeUser}
@@ -19,6 +23,10 @@ const ActiveUsersList = ({dashboard}: any) => {
   );
 };
 
-const mapStateToProps = (dashboard: any) => ({...dashboard});
+const mapStateToProps = (state: RootState) => {
+  return {
+    state: state.dashboard,
+  };
+};
 
 export default connect(mapStateToProps)(ActiveUsersList);

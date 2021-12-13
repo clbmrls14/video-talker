@@ -4,7 +4,7 @@ type Props = {
   handleSubmitButtonPressed(): void;
 };
 
-const SubmitButton = ({handleSubmitButtonPressed}: Props) => {
+const SubmitButton = ({ handleSubmitButtonPressed }: Props) => {
   return (
     <div className="login-page_button_container">
       <button

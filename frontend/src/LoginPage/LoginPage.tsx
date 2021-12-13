@@ -8,17 +8,18 @@ import "./LoginPage.css";
 import SubmitButton from "./components/SubmitButton";
 import UsernameInput from "./components/UsernameInput";
 import { setUsername } from "../store/actions/dashboardActions";
-import { registerNewUser } from '../utils/wssConnection/wssConnection';
+import { registerNewUser } from "../utils/wssConnection/wssConnection";
+import { AppDispatch } from "../store/store";
 
 type Props = {
   saveUsername(username: string): void;
 };
 
-const LoginPage = ({saveUsername}: Props) => {
+const LoginPage = ({ saveUsername }: Props) => {
   const [username, setUsername] = useState<string>("");
 
   const navigate = useNavigate();
-  
+
   const handleSubmitButtonPressed = () => {
     navigate("/dashboard");
     registerNewUser(username);
@@ -45,7 +46,7 @@ const LoginPage = ({saveUsername}: Props) => {
   );
 };
 
-const mapActionsToProps = (dispatch: any) => {
+const mapActionsToProps = (dispatch: AppDispatch) => {
   return {
     saveUsername: (username: string) => dispatch(setUsername(username)),
   };

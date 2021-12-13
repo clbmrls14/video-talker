@@ -2,7 +2,7 @@ import express from "express";
 import { PerformanceObserver } from "perf_hooks";
 import socket from "socket.io";
 
-import { IUser } from './interfaces/User';
+import { IUser } from "./interfaces/User";
 
 const PORT = 5000;
 
@@ -20,11 +20,11 @@ const io = require("socket.io")(server, {
   },
 });
 
-let peers: IUser[]= [];
+let peers: IUser[] = [];
 
 const broadcastEventTypes = {
-  ACTIVE_USERS: 'ACTIVE_USERS',
-  GROUP_CALL_ROOMS: 'GROUP_CALL_ROOMS'
+  ACTIVE_USERS: "ACTIVE_USERS",
+  GROUP_CALL_ROOMS: "GROUP_CALL_ROOMS",
 };
 
 io.on("connection", (socket: any) => {
@@ -32,17 +32,17 @@ io.on("connection", (socket: any) => {
   console.log("new user connected");
   console.log(socket.id);
 
-  socket.on('register-new-user', (data: any) => {
+  socket.on("register-new-user", (data: any) => {
     peers.push({
       username: data.username,
-      socketId: data.socketId
+      socketId: data.socketId,
     });
-    console.log('registered new user');
+    console.log("registered new user");
     console.log(peers);
-  })
+  });
 
-  io.sockets.emit('broadcast', {
+  io.sockets.emit("broadcast", {
     event: broadcastEventTypes.ACTIVE_USERS,
-    activeUsers: peers
-  })
+    activeUsers: peers,
+  });
 });
