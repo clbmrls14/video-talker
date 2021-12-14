@@ -39,10 +39,20 @@ io.on("connection", (socket: any) => {
     });
     console.log("registered new user");
     console.log(peers);
+
+    io.sockets.emit("broadcast", {
+      event: broadcastEventTypes.ACTIVE_USERS,
+      activeUsers: peers,
+    });
   });
 
-  io.sockets.emit("broadcast", {
-    event: broadcastEventTypes.ACTIVE_USERS,
-    activeUsers: peers,
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+    peers = peers.filter((peer: IUser) => peer.socketId !== socket.id);
+
+    io.sockets.emit("broadcast", {
+      event: broadcastEventTypes.ACTIVE_USERS,
+      activeUsers: peers,
+    });
   });
 });

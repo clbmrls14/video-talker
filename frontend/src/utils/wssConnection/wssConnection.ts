@@ -33,7 +33,8 @@ export const registerNewUser = (username: string) => {
 const handleBroadcastEvent = (data: any) => {
   switch (data.event) {
     case broadcastEventTypes.ACTIVE_USERS:
-      store.dispatch(dashboardActions.setActiveUsers(data.activeUsers));
+      const activeUsers: User[] = data.activeUsers.filter((activeUser: User) => activeUser.socketId !== socket.id);
+      store.dispatch(dashboardActions.setActiveUsers(activeUsers));
       break;
     default:
       break;

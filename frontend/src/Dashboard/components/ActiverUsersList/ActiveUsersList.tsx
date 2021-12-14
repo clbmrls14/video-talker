@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 import { RootState } from "../../../store/store";
 
 interface Props {
-  state: AppState;
+  state: DashboardState;
 }
 
 const ActiveUsersList = (props: Props) => {
