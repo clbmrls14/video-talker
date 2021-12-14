@@ -1,15 +1,15 @@
 import React from "react";
-import ActiveUsersList from "./ActiveUsersList";
 
 import userAvatar from "../../../resources/userAvatar.png";
+import { callToOtherUser } from "../../../utils/webRTC/webRTCHandler";
 
 type Props = {
   activeUser: User;
 };
 
-const ActiveUsersListItem = (props: Props) => {
+const ActiveUsersListItem = ({ activeUser }: Props) => {
   const handleListItemPressed = () => {
-    // call a user
+    callToOtherUser(activeUser);
   };
 
   return (
@@ -17,7 +17,7 @@ const ActiveUsersListItem = (props: Props) => {
       <div className="active_user_list_image_container">
         <img className="active_user_list_image" src={userAvatar} />
       </div>
-      <span className="active_user_list_text">{props.activeUser.username}</span>
+      <span className="active_user_list_text">{activeUser.username}</span>
     </div>
   );
 };

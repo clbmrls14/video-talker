@@ -46,13 +46,23 @@ io.on("connection", (socket: any) => {
     });
   });
 
-  socket.on('disconnect', () => {
-    console.log('user disconnected');
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
     peers = peers.filter((peer: IUser) => peer.socketId !== socket.id);
 
     io.sockets.emit("broadcast", {
       event: broadcastEventTypes.ACTIVE_USERS,
       activeUsers: peers,
+    });
+  });
+
+  // listeners related with direct call
+
+  socket.on("pre-offer", (data: any) => {
+    console.log("pre-offer handled");
+    io.to(data.callee.socketId).emit("pre-offer", {
+      callerUsername: data.caller.username,
+      callerSocketId: socket.id,
     });
   });
 });

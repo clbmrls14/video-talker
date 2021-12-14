@@ -6,7 +6,10 @@ type DashboardState = {
 type CallState = {
   localStream: any;
   remoteStream: any;
-}
+  callState: string;
+  callingDialogVisible: boolean;
+  callerUsername: string;
+};
 
 type User = {
   socketId: number;
