@@ -22,8 +22,8 @@ const LoginPage = ({ saveUsername }: Props) => {
 
   const handleSubmitButtonPressed = () => {
     registerNewUser(username);
-    navigate("/dashboard");
     saveUsername(username);
+    navigate("/dashboard");
   };
 
   return (

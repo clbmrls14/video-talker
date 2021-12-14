@@ -8,7 +8,7 @@ const initialState: CallState = {
   callerUsername: "",
 };
 
-const reducer = (state: CallState[], action: callActions.Actions) => {
+const reducer = (state: CallState = initialState, action: callActions.Actions) => {
   switch (action.type) {
     case callActions.CALL_SET_LOCAL_STREAM:
       return {
@@ -31,7 +31,7 @@ const reducer = (state: CallState[], action: callActions.Actions) => {
         callerUsername: action.callerUsername,
       };
     default:
-      return initialState;
+      return state;
   }
 };
 

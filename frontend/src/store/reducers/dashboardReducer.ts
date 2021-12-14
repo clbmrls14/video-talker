@@ -5,7 +5,7 @@ const initialState: DashboardState = {
   activeUsers: [],
 };
 
-const reducer = (state: DashboardState[], action: dashboardActions.Actions) => {
+const reducer = (state: DashboardState = initialState, action: dashboardActions.Actions) => {
   switch (action.type) {
     case dashboardActions.DASHBOARD_SET_USERNAME:
       return {
@@ -18,7 +18,7 @@ const reducer = (state: DashboardState[], action: dashboardActions.Actions) => {
         activeUsers: action.activeUsers,
       };
     default:
-      return initialState;
+      return state;
   }
 };
 
