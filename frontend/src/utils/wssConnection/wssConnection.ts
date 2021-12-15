@@ -28,6 +28,10 @@ export const connectWithWebSocket = () => {
   socket.on("pre-offer", (data: any) => {
     webRTCHandler.handlePreOffer(data);
   });
+
+  socket.on("pre-offer-answer", (data: any) => {
+    webRTCHandler.handlePreOfferAnswer(data);
+  });
 };
 
 export const registerNewUser = (username: string) => {
@@ -42,6 +46,10 @@ export const registerNewUser = (username: string) => {
 export const sendPreOffer = (data: any) => {
   socket.emit("pre-offer", data);
 };
+
+export const sendPreOfferAnswer = (data: any) => {
+  socket.emit('pre-offer-answer', data);
+}
 
 const handleBroadcastEvent = (data: any) => {
   switch (data.event) {

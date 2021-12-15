@@ -6,6 +6,10 @@ const initialState: CallState = {
   callState: callActions.callStates.CALL_UNAVAILABLE,
   callingDialogVisible: false,
   callerUsername: "",
+  callRejected: {
+    rejected: false,
+    reason: ''
+  }
 };
 
 const reducer = (state: CallState = initialState, action: callActions.Actions) => {
@@ -23,13 +27,18 @@ const reducer = (state: CallState = initialState, action: callActions.Actions) =
     case callActions.CALL_SET_CALLING_DIALOG_VISIBLE:
       return {
         ...state,
-        callingDialogVisible: true,
+        callingDialogVisible: action.isVisible,
       };
     case callActions.CALL_SET_CALLER_USERNAME:
       return {
         ...state,
         callerUsername: action.callerUsername,
       };
+    case callActions.CALL_SET_CALL_REJECTED:
+      return {
+        ...state,
+        callRejected: action.callRejected
+      }
     default:
       return state;
   }

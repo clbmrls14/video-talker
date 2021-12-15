@@ -9,6 +9,12 @@ type CallState = {
   callState: string;
   callingDialogVisible: boolean;
   callerUsername: string;
+  callRejected: CallRejected;
+};
+
+type CallRejected = {
+  rejected: boolean;
+  reason: string;
 };
 
 type User = {

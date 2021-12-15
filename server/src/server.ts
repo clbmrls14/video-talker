@@ -60,9 +60,17 @@ io.on("connection", (socket: any) => {
 
   socket.on("pre-offer", (data: any) => {
     console.log("pre-offer handled");
+    console.log(`${data.caller.username} is calling ${data.callee.username}`);
     io.to(data.callee.socketId).emit("pre-offer", {
       callerUsername: data.caller.username,
       callerSocketId: socket.id,
+    });
+  });
+
+  socket.on("pre-offer-answer", (data: any) => {
+    console.log('handling pre-offer answer');
+    io.to(data.callerSocketId).emit("pre-offer-answer", {
+      answer: data.answer
     });
   });
 });
