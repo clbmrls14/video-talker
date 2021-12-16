@@ -19,39 +19,63 @@ export const connectWithWebSocket = () => {
     console.log(socket.id);
   });
 
-  socket.on("broadcast", (data: any) => {
+  socket.on("broadcast", (data: BroadcastData) => {
     handleBroadcastEvent(data);
   });
 
   // listeners related to direct call
 
-  socket.on("pre-offer", (data: any) => {
+  socket.on("pre-offer", (data: PreOfferReceiveData) => {
     webRTCHandler.handlePreOffer(data);
   });
 
-  socket.on("pre-offer-answer", (data: any) => {
+  socket.on("pre-offer-answer", (data: PreOfferAnswerData) => {
     webRTCHandler.handlePreOfferAnswer(data);
+  });
+
+  socket.on("webRTC-answer", (data: WebRTCAnswerData) => {
+    webRTCHandler.handleAnswer(data);
+  });
+
+  socket.on("webRTC-offer", (data: WebRTCOfferData) => {
+    webRTCHandler.handleOffer(data);
+  });
+
+  socket.on("webRTC-candidate", (data: WebRTCCandidateData) => {
+    webRTCHandler.handleCandidate(data);
   });
 };
 
 export const registerNewUser = (username: string) => {
   socket.emit("register-new-user", {
-    username: username,
     socketId: socket.id,
+    username: username,
   });
 };
 
 // emitting events to server related with direct call
 
-export const sendPreOffer = (data: any) => {
+export const sendPreOffer = (data: PreOfferSendData) => {
   socket.emit("pre-offer", data);
 };
 
-export const sendPreOfferAnswer = (data: any) => {
+export const sendPreOfferAnswer = (data: PreOfferAnswerData) => {
   socket.emit("pre-offer-answer", data);
 };
 
-const handleBroadcastEvent = (data: any) => {
+export const sendWebRTCOffer = (data: WebRTCOfferData) => {
+  socket.emit("webRTC-offer", data);
+};
+
+export const sendWebRTCAnswer = (data: WebRTCAnswerData) => {
+  socket.emit("webRTC-answer", data);
+};
+
+export const sendWebRTCCandidate = (data: WebRTCCandidateData) => {
+  socket.emit("webRTC-candidate", data);
+};
+
+const handleBroadcastEvent = (data: BroadcastData) => {
   switch (data.event) {
     case broadcastEventTypes.ACTIVE_USERS:
       const activeUsers: User[] = data.activeUsers.filter(

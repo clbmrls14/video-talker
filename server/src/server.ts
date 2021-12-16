@@ -1,6 +1,13 @@
 import express from "express";
 import { PerformanceObserver } from "perf_hooks";
 import socket from "socket.io";
+import {
+  IPreOfferAnswerData,
+  IPreOfferData,
+  IWebRTCAnswerData,
+  IWebRTCCandidateData,
+  IWebRTCOfferData,
+} from "./interfaces/OfferData";
 
 import { IUser } from "./interfaces/User";
 
@@ -32,7 +39,7 @@ io.on("connection", (socket: any) => {
   console.log("new user connected");
   console.log(socket.id);
 
-  socket.on("register-new-user", (data: any) => {
+  socket.on("register-new-user", (data: IUser) => {
     peers.push({
       username: data.username,
       socketId: data.socketId,
@@ -58,7 +65,7 @@ io.on("connection", (socket: any) => {
 
   // listeners related with direct call
 
-  socket.on("pre-offer", (data: any) => {
+  socket.on("pre-offer", (data: IPreOfferData) => {
     console.log("pre-offer handled");
     console.log(`${data.caller.username} is calling ${data.callee.username}`);
     io.to(data.callee.socketId).emit("pre-offer", {
@@ -67,10 +74,31 @@ io.on("connection", (socket: any) => {
     });
   });
 
-  socket.on("pre-offer-answer", (data: any) => {
+  socket.on("pre-offer-answer", (data: IPreOfferAnswerData) => {
     console.log("handling pre-offer answer");
     io.to(data.callerSocketId).emit("pre-offer-answer", {
       answer: data.answer,
+    });
+  });
+
+  socket.on("webRTC-offer", (data: IWebRTCOfferData) => {
+    console.log("handling webRTC offer");
+    io.to(data.calleeSocketId).emit("webRTC-offer", {
+      offer: data.offer,
+    });
+  });
+
+  socket.on("webRTC-answer", (data: IWebRTCAnswerData) => {
+    console.log("handling webRTC answer");
+    io.to(data.callerSocketId).emit("webRTC-answer", {
+      answer: data.answer,
+    });
+  });
+
+  socket.on("webRTC-candidate", (data: IWebRTCCandidateData) => {
+    console.log("handling ice candidate");
+    io.to(data.connectedUserSocketId).emit("webRTC-candidate", {
+      candidate: data.candidate,
     });
   });
 });
