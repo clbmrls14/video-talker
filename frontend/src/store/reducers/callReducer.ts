@@ -8,11 +8,14 @@ const initialState: CallState = {
   callerUsername: "",
   callRejected: {
     rejected: false,
-    reason: ''
-  }
+    reason: "",
+  },
 };
 
-const reducer = (state: CallState = initialState, action: callActions.Actions) => {
+const reducer = (
+  state: CallState = initialState,
+  action: callActions.Actions
+) => {
   switch (action.type) {
     case callActions.CALL_SET_LOCAL_STREAM:
       return {
@@ -37,8 +40,8 @@ const reducer = (state: CallState = initialState, action: callActions.Actions) =
     case callActions.CALL_SET_CALL_REJECTED:
       return {
         ...state,
-        callRejected: action.callRejected
-      }
+        callRejected: action.callRejected,
+      };
     default:
       return state;
   }

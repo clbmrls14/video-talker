@@ -1,5 +1,8 @@
 import React from "react";
-import { acceptIncomingCallRequest, rejectIncomingCallRequest } from "../../../utils/webRTC/webRTCHandler";
+import {
+  acceptIncomingCallRequest,
+  rejectIncomingCallRequest,
+} from "../../../utils/webRTC/webRTCHandler";
 
 import "./IncomingCallDialog.css";
 

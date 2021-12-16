@@ -68,9 +68,9 @@ io.on("connection", (socket: any) => {
   });
 
   socket.on("pre-offer-answer", (data: any) => {
-    console.log('handling pre-offer answer');
+    console.log("handling pre-offer answer");
     io.to(data.callerSocketId).emit("pre-offer-answer", {
-      answer: data.answer
+      answer: data.answer,
     });
   });
 });

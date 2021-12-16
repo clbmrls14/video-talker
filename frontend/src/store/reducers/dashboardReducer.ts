@@ -5,7 +5,10 @@ const initialState: DashboardState = {
   activeUsers: [],
 };
 
-const reducer = (state: DashboardState = initialState, action: dashboardActions.Actions) => {
+const reducer = (
+  state: DashboardState = initialState,
+  action: dashboardActions.Actions
+) => {
   switch (action.type) {
     case dashboardActions.DASHBOARD_SET_USERNAME:
       return {

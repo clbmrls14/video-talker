@@ -19,7 +19,7 @@ type Props = {
   localStream: any;
 };
 
-const LocalVideoView = ({localStream}: Props) => {
+const LocalVideoView = ({ localStream }: Props) => {
   const localVideoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {

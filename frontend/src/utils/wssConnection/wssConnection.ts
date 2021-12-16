@@ -48,8 +48,8 @@ export const sendPreOffer = (data: any) => {
 };
 
 export const sendPreOfferAnswer = (data: any) => {
-  socket.emit('pre-offer-answer', data);
-}
+  socket.emit("pre-offer-answer", data);
+};
 
 const handleBroadcastEvent = (data: any) => {
   switch (data.event) {

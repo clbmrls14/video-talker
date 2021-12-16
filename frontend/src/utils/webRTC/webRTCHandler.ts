@@ -10,15 +10,26 @@ import * as wss from "../wssConnection/wssConnection";
 import { store } from "../../store/store";
 
 const preOfferAnswers = {
-  CALL_ACCEPTED: 'CALL_ACCEPTED',
-  CALL_REJECTED: 'CALL_REJECTED',
-  CALL_NOT_AVAILABLE: 'CALL_NOT_AVAILABLE',
-}
+  CALL_ACCEPTED: "CALL_ACCEPTED",
+  CALL_REJECTED: "CALL_REJECTED",
+  CALL_NOT_AVAILABLE: "CALL_NOT_AVAILABLE",
+};
 
 const defaultContraints = {
   video: true,
   audio: true,
 };
+
+const configuration = {
+  iceServers: [
+    {
+      urls: "stun:stun.l.google.com:13902",
+    },
+  ],
+};
+
+let connectedUserSocketId: number | null;
+let peerConnection: RTCPeerConnection;
 
 export const getLocalStream = () => {
   navigator.mediaDevices
@@ -33,8 +44,6 @@ export const getLocalStream = () => {
     });
 };
 
-let connectedUserSocketId: number | null;
-
 export const callToOtherUser = (calleeDetails: User) => {
   connectedUserSocketId = calleeDetails.socketId;
   store.dispatch(setCallState(callStates.CALL_IN_PROGRESS));
@@ -47,6 +56,20 @@ export const callToOtherUser = (calleeDetails: User) => {
   });
 };
 
+const createPeerConnection = () => {
+  peerConnection = new RTCPeerConnection(configuration);
+
+  const localStream = store.getState().call.localStream;
+
+  for (const track of localStream.getTrack()) {
+    peerConnection.addTrack(track, localStream);
+  }
+
+  peerConnection.ontrack = ({ streams: [stream] }) => {
+    // dispatch remote stream in store
+  };
+};
+
 export const handlePreOffer = (data: any) => {
   if (checkIfCallIsPossible()) {
     connectedUserSocketId = data.callerSocketId;
@@ -55,7 +78,7 @@ export const handlePreOffer = (data: any) => {
   } else {
     wss.sendPreOfferAnswer({
       callerSocketId: data.callerSocketId,
-      answer: preOfferAnswers.CALL_NOT_AVAILABLE
+      answer: preOfferAnswers.CALL_NOT_AVAILABLE,
     });
   }
 };
@@ -63,14 +86,14 @@ export const handlePreOffer = (data: any) => {
 export const acceptIncomingCallRequest = () => {
   wss.sendPreOfferAnswer({
     callerSocketId: connectedUserSocketId,
-    answer: preOfferAnswers.CALL_ACCEPTED
+    answer: preOfferAnswers.CALL_ACCEPTED,
   });
 };
 
 export const rejectIncomingCallRequest = () => {
   wss.sendPreOfferAnswer({
     callerSocketId: connectedUserSocketId,
-    answer: preOfferAnswers.CALL_REJECTED
+    answer: preOfferAnswers.CALL_REJECTED,
   });
 
   resetCallData();
@@ -84,22 +107,24 @@ export const handlePreOfferAnswer = (data: any) => {
   } else {
     let rejectionReason: string;
     if (data.answer === preOfferAnswers.CALL_NOT_AVAILABLE) {
-      rejectionReason = 'Callee is not able to answer';
+      rejectionReason = "Callee is not able to answer";
     } else {
-      rejectionReason = 'Call rejected';
+      rejectionReason = "Call rejected";
     }
-    store.dispatch(setCallRejected({
-      rejected: true,
-      reason: rejectionReason
-    }));
+    store.dispatch(
+      setCallRejected({
+        rejected: true,
+        reason: rejectionReason,
+      })
+    );
   }
-}
+};
 
 export const checkIfCallIsPossible = () => {
-  return (
-    !(store.getState().call.localStream === null ||
-    store.getState().call.callState !== callStates.CALL_AVAILABLE)
-  ); 
+  return !(
+    store.getState().call.localStream === null ||
+    store.getState().call.callState !== callStates.CALL_AVAILABLE
+  );
 };
 
 export const resetCallData = () => {
