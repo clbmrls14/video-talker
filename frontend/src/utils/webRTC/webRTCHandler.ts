@@ -5,6 +5,7 @@ import {
   setCallRejected,
   setCallState,
   setLocalStream,
+  setRemoteStream,
 } from "../../store/actions/callActions";
 import * as wss from "../wssConnection/wssConnection";
 import { store } from "../../store/store";
@@ -63,15 +64,16 @@ const createPeerConnection = () => {
 
   const localStream = store.getState().call.localStream;
 
-  for (const track of localStream.getTrack()) {
+  for (const track of localStream.getTracks()) {
     peerConnection.addTrack(track, localStream);
   }
 
   peerConnection.ontrack = ({ streams: [stream] }) => {
-    // dispatch remote stream in store
+    store.dispatch(setRemoteStream(stream));
   };
 
   peerConnection.onicecandidate = (event: RTCPeerConnectionIceEvent) => {
+    console.log("getting candidates from stun server");
     if (event.candidate) {
       wss.sendWebRTCCandidate({
         candidate: event.candidate,
@@ -79,6 +81,12 @@ const createPeerConnection = () => {
       });
     }
   };
+
+  peerConnection.onconnectionstatechange = (event: any) => {
+    if (peerConnection.connectionState === "connected") {
+      console.log("successfully connected with other peer");
+    }
+  }
 };
 
 export const handlePreOffer = (data: PreOfferReceiveData) => {
@@ -99,6 +107,8 @@ export const acceptIncomingCallRequest = () => {
     callerSocketId: connectedUserSocketId,
     answer: preOfferAnswers.CALL_ACCEPTED,
   });
+
+  store.dispatch(setCallState(callStates.CALL_IN_PROGRESS));
 };
 
 export const rejectIncomingCallRequest = () => {
@@ -158,6 +168,7 @@ export const handleAnswer = async (data: WebRTCAnswerData) => {
 
 export const handleCandidate = async (data: WebRTCCandidateData) => {
   try {
+    console.log("adding ice candidates");
     await peerConnection.addIceCandidate(data.candidate);
   } catch (err) {
     console.error(

@@ -42,6 +42,11 @@ const reducer = (
         ...state,
         callRejected: action.callRejected,
       };
+    case callActions.CALL_SET_REMOTE_STREAM:
+      return {
+        ...state,
+        remoteStream: action.remoteStream,
+      }
     default:
       return state;
   }
