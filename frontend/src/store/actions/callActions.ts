@@ -12,6 +12,10 @@ export const CALL_SET_CALLING_DIALOG_VISIBLE =
 export const CALL_SET_CALLER_USERNAME = "CALL.SET_CALLER_USERNAME";
 export const CALL_SET_CALL_REJECTED = "CALL.SET_CALL_REJECTED";
 export const CALL_SET_REMOTE_STREAM = "CALL.SET_REMOTE_STREAM";
+export const CALL_SET_LOCAL_MICROPHONE_ENABLED =
+  "CALL.SET_LOCAL_MICROPHONE_ENABLED";
+export const CALL_SET_LOCAL_CAMERA_ENABLED = "CALL.SET_LOCAL_CAMERA_ENABLED";
+export const CALL_SET_SCREEN_SHARING_ACTIVE = "CALL.SET_SCREEN_SHARING_ACTIVE";
 
 export const setLocalStream = (localStream: MediaStream) => {
   return {
@@ -54,9 +58,30 @@ export const setCallRejected = (callRejectedDetails: CallRejected) => {
 export const setRemoteStream = (remoteStream: any) => {
   return {
     type: CALL_SET_REMOTE_STREAM,
-    remoteStream: remoteStream
+    remoteStream: remoteStream,
   } as const;
-} 
+};
+
+export const setLocalCameraEnabled = (enabled: boolean) => {
+  return {
+    type: CALL_SET_LOCAL_CAMERA_ENABLED,
+    enabled: enabled,
+  } as const;
+};
+
+export const setLocalMicrophoneEnabled = (enabled: boolean) => {
+  return {
+    type: CALL_SET_LOCAL_MICROPHONE_ENABLED,
+    enabled: enabled,
+  } as const;
+};
+
+export const setScreenSharingActive = (active: boolean) => {
+  return {
+    type: CALL_SET_SCREEN_SHARING_ACTIVE,
+    active: active,
+  } as const;
+};
 
 export type Actions =
   | ReturnType<typeof setLocalStream>
@@ -64,4 +89,7 @@ export type Actions =
   | ReturnType<typeof setCallingDialogVisible>
   | ReturnType<typeof setCallerUsername>
   | ReturnType<typeof setCallRejected>
-  | ReturnType<typeof setRemoteStream>;
+  | ReturnType<typeof setRemoteStream>
+  | ReturnType<typeof setLocalCameraEnabled>
+  | ReturnType<typeof setLocalMicrophoneEnabled>
+  | ReturnType<typeof setScreenSharingActive>;

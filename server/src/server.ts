@@ -101,4 +101,9 @@ io.on("connection", (socket: any) => {
       candidate: data.candidate,
     });
   });
+
+  socket.on("user-hang-up", (data: any) => {
+    console.log("handling user hang up");
+    io.to(data.connectedUserSocketId).emit("user-hang-up");
+  });
 });

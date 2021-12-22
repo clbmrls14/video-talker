@@ -6,6 +6,7 @@ import {
   setCallState,
   setLocalStream,
   setRemoteStream,
+  setScreenSharingActive,
 } from "../../store/actions/callActions";
 import * as wss from "../wssConnection/wssConnection";
 import { store } from "../../store/store";
@@ -86,7 +87,7 @@ const createPeerConnection = () => {
     if (peerConnection.connectionState === "connected") {
       console.log("successfully connected with other peer");
     }
-  }
+  };
 };
 
 export const handlePreOffer = (data: PreOfferReceiveData) => {
@@ -183,6 +184,62 @@ export const checkIfCallIsPossible = () => {
     store.getState().call.localStream === null ||
     store.getState().call.callState !== callStates.CALL_AVAILABLE
   );
+};
+
+let screenSharingStream: MediaStream;
+
+export const switchForScreenSharingStream = async () => {
+  if (!store.getState().call.screenSharingActive) {
+    try {
+      screenSharingStream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+      });
+      store.dispatch(setScreenSharingActive(true));
+      const senders = peerConnection.getSenders();
+      const sender = senders.find(
+        (sender) =>
+          sender.track?.kind == screenSharingStream.getVideoTracks()[0].kind
+      );
+      sender?.replaceTrack(screenSharingStream.getVideoTracks()[0]);
+    } catch (err) {
+      console.error("error occurred when trying to get screen sharing stream");
+    }
+  } else {
+    const localStream = store.getState().call.localStream;
+    const senders = peerConnection.getSenders();
+    const sender = senders.find(
+      (sender) => sender?.track?.kind == localStream.getVideoTracks()[0].kind
+    );
+    sender?.replaceTrack(localStream.getVideoTracks()[0]);
+    store.dispatch(setScreenSharingActive(false));
+    screenSharingStream.getTracks().forEach((track) => track.stop());
+  }
+};
+
+export const handleUserHangUp = () => {
+  resetCallDataAfterHangUp();
+};
+
+export const hangUp = () => {
+  wss.sendUserHangUp({
+    connectedUserSocketId: connectedUserSocketId,
+  });
+
+  resetCallDataAfterHangUp();
+};
+
+const resetCallDataAfterHangUp = () => {
+  store.dispatch(setRemoteStream(null));
+
+  peerConnection.close();
+  createPeerConnection();
+  resetCallData();
+
+  if (store.getState().call.screenSharingActive) {
+    screenSharingStream.getTracks().forEach((track) => {
+      track.stop();
+    });
+  }
 };
 
 export const resetCallData = () => {

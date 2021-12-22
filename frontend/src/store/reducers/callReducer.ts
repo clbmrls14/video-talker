@@ -10,6 +10,9 @@ const initialState: CallState = {
     rejected: false,
     reason: "",
   },
+  localCameraEnabled: true,
+  localMicrophoneEnabled: true,
+  screenSharingActive: false,
 };
 
 const reducer = (
@@ -46,7 +49,22 @@ const reducer = (
       return {
         ...state,
         remoteStream: action.remoteStream,
-      }
+      };
+    case callActions.CALL_SET_LOCAL_CAMERA_ENABLED:
+      return {
+        ...state,
+        localCameraEnabled: action.enabled,
+      };
+    case callActions.CALL_SET_LOCAL_MICROPHONE_ENABLED:
+      return {
+        ...state,
+        localMicrophoneEnabled: action.enabled,
+      };
+    case callActions.CALL_SET_SCREEN_SHARING_ACTIVE:
+      return {
+        ...state,
+        screenSharingActive: action.active,
+      };
     default:
       return state;
   }

@@ -10,6 +10,9 @@ type CallState = {
   callingDialogVisible: boolean;
   callerUsername: string;
   callRejected: CallRejected;
+  localCameraEnabled: boolean;
+  localMicrophoneEnabled: boolean;
+  screenSharingActive: boolean;
 };
 
 type CallRejected = {
