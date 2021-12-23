@@ -8,6 +8,7 @@ import { RootState } from "../../../store/store";
 
 interface Props {
   state: DashboardState;
+  callState: CallState;
 }
 
 const ActiveUsersList = (props: Props) => {
@@ -17,6 +18,7 @@ const ActiveUsersList = (props: Props) => {
         <ActiveUsersListItem
           key={activeUser.socketId}
           activeUser={activeUser}
+          callState={props.callState}
         />
       ))}
     </div>
@@ -26,6 +28,7 @@ const ActiveUsersList = (props: Props) => {
 const mapStateToProps = (state: RootState) => {
   return {
     state: state.dashboard,
+    callState: state.call,
   };
 };
 

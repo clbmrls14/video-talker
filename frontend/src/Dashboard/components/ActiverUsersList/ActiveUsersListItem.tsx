@@ -1,15 +1,19 @@
 import React from "react";
 
 import userAvatar from "../../../resources/userAvatar.png";
+import { callStates } from "../../../store/actions/callActions";
 import { callToOtherUser } from "../../../utils/webRTC/webRTCHandler";
 
 type Props = {
   activeUser: User;
+  callState: CallState;
 };
 
-const ActiveUsersListItem = ({ activeUser }: Props) => {
+const ActiveUsersListItem = ({ activeUser, callState }: Props) => {
   const handleListItemPressed = () => {
-    callToOtherUser(activeUser);
+    if (callState.callState === callStates.CALL_AVAILABLE) {
+      callToOtherUser(activeUser);
+    }
   };
 
   return (

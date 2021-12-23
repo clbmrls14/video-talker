@@ -1,5 +1,6 @@
 import {
   callStates,
+  resetCallDataState,
   setCallerUsername,
   setCallingDialogVisible,
   setCallRejected,
@@ -229,17 +230,21 @@ export const hangUp = () => {
 };
 
 const resetCallDataAfterHangUp = () => {
-  store.dispatch(setRemoteStream(null));
-
-  peerConnection.close();
-  createPeerConnection();
-  resetCallData();
-
   if (store.getState().call.screenSharingActive) {
     screenSharingStream.getTracks().forEach((track) => {
       track.stop();
     });
   }
+
+  store.dispatch(resetCallDataState());
+  peerConnection.close();
+  createPeerConnection();
+  resetCallData();
+
+  const localStream = store.getState().call.localStream;
+
+  localStream.getVideoTracks()[0].enabled = true;
+  localStream.getAudioTracks()[0].enabled = true;
 };
 
 export const resetCallData = () => {
